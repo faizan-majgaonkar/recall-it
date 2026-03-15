@@ -1,14 +1,16 @@
-import { requireAuthenticatedUser } from "@/lib/auth/require-user";
+import { Container } from "@/components/layout/container";
 
-export default async function DocumentsPage() {
-  const user = await requireAuthenticatedUser();
-
+export default function DocumentsPage() {
   return (
-    <main className="min-h-screen px-4 py-10">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="text-2xl font-semibold tracking-tight">Documents</h1>
-        <p className="mt-2 text-muted-foreground">Welcome back, {user.name}.</p>
-      </div>
+    <main className="py-10">
+      <Container size="xl">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight">Documents</h1>
+          <p className="text-muted-foreground">
+            Upload and manage your study documents.
+          </p>
+        </div>
+      </Container>
     </main>
   );
 }
