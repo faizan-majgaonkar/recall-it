@@ -15,6 +15,7 @@ import { getSessionExpiryDate } from "@/lib/auth/session";
 import { signSessionToken } from "@/lib/auth/jwt";
 import { getCurrentSessionTokenPayload } from "@/lib/auth/current-user";
 import { loginSchema, signupSchema } from "./auth.validators";
+import { AuthError } from "./auth.errors";
 import type {
   AuthResult,
   LoginInput,
@@ -44,7 +45,7 @@ export async function signup(input: SignupInput): Promise<AuthResult> {
   const existingUser = await findUserByEmail(parsed.email);
 
   if (existingUser) {
-    throw new Error("An account with this email already exists");
+    throw new AuthError("An account with this email already exists", 409);
   }
 
   const passwordHash = await hashPassword(parsed.password);
@@ -83,7 +84,7 @@ export async function login(input: LoginInput): Promise<AuthResult> {
   const user = await findUserByEmail(parsed.email);
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new AuthError("Invalid email or password", 401);
   }
 
   const isPasswordValid = await verifyPassword(
@@ -92,7 +93,7 @@ export async function login(input: LoginInput): Promise<AuthResult> {
   );
 
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new AuthError("Invalid email or password", 401);
   }
 
   const tokenJti = randomUUID();
