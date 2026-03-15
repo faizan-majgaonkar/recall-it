@@ -8,6 +8,13 @@
       "when": 1773543194731,
       "tag": "0000_fancy_rafael_vega",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773557773922,
+      "tag": "0001_black_legion",
+      "breakpoints": true
     }
   ]
 }
