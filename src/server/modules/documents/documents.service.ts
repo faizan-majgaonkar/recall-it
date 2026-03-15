@@ -1,12 +1,7 @@
-import { getAuthenticatedUser } from "@/server/modules/auth/auth.service";
+import { requireAuthenticatedUser } from "@/lib/auth/require-user";
 import { listDocumentsByUserId } from "@/server/repositories/document.repository";
 
 export async function getCurrentUserDocuments() {
-  const user = await getAuthenticatedUser();
-
-  if (!user) {
-    return null;
-  }
-
+  const user = await requireAuthenticatedUser();
   return listDocumentsByUserId(user.id);
 }
