@@ -1,7 +1,13 @@
-import Image from "next/image";
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black"></div>
+    <main className="min-h-screen px-4 py-10">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-3xl font-semibold tracking-tight">Recall It</h1>
+        <p className="mt-3 text-muted-foreground">
+          Upload a document, test your understanding, and identify weak
+          concepts.
+        </p>
+      </div>
+    </main>
   );
 }
