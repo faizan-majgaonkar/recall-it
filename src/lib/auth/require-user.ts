@@ -10,3 +10,13 @@ export async function requireAuthenticatedUser() {
 
   return user;
 }
+
+export async function requireAuthenticatedUserForApi() {
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  return user;
+}
