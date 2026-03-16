@@ -29,6 +29,9 @@ export const documents = pgTable(
     checksum: text("checksum"),
     processingStatus: text("processing_status").notNull().default("uploaded"),
 
+    extractedPageCount: integer("extracted_page_count"),
+    processingError: text("processing_error"),
+
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),

@@ -6,7 +6,12 @@ import { createCurrentUserDocument } from "@/server/modules/documents/documents.
 import { buildDocumentStorageKey, uploadBufferToR2 } from "@/lib/storage/r2";
 
 const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024;
-const ALLOWED_MIME_TYPES = ["application/pdf"];
+
+const ALLOWED_MIME_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+];
 
 export async function POST(request: Request) {
   try {
@@ -34,7 +39,7 @@ export async function POST(request: Request) {
       return Response.json(
         {
           success: false,
-          message: "Only PDF files are supported",
+          message: "Only PDF, DOCX, and TXT files are supported",
         },
         { status: 400 },
       );

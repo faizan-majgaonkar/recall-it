@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +13,12 @@ type UploadResponse = {
     id: string;
   };
 };
+
+const ALLOWED_FILE_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+];
 
 export function UploadForm() {
   const router = useRouter();
@@ -29,12 +34,12 @@ export function UploadForm() {
     setErrorMessage("");
 
     if (!file) {
-      setErrorMessage("Please select a PDF file");
+      setErrorMessage("Please select a document file");
       return;
     }
 
-    if (file.type !== "application/pdf") {
-      setErrorMessage("Only PDF files are supported");
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      setErrorMessage("Only PDF, DOCX, and TXT files are supported");
       return;
     }
 
@@ -82,11 +87,11 @@ export function UploadForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="file">PDF file</Label>
+        <Label htmlFor="file">Document file</Label>
         <Input
           id="file"
           type="file"
-          accept="application/pdf"
+          accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
           onChange={(event) => {
             const selectedFile = event.target.files?.[0] ?? null;
             setFile(selectedFile);
@@ -95,7 +100,7 @@ export function UploadForm() {
           required
         />
         <p className="text-xs text-muted-foreground">
-          Upload a PDF file up to 15 MB.
+          Upload a PDF, DOCX, or TXT file up to 15 MB.
         </p>
       </div>
 

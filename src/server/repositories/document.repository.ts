@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
 
@@ -8,6 +8,24 @@ export async function listDocumentsByUserId(userId: string) {
     .from(documents)
     .where(eq(documents.userId, userId))
     .orderBy(desc(documents.createdAt));
+}
+
+export async function findDocumentByIdForUser(input: {
+  documentId: string;
+  userId: string;
+}) {
+  const [document] = await db
+    .select()
+    .from(documents)
+    .where(
+      and(
+        eq(documents.id, input.documentId),
+        eq(documents.userId, input.userId),
+      ),
+    )
+    .limit(1);
+
+  return document ?? null;
 }
 
 export async function createDocument(input: {
@@ -39,4 +57,40 @@ export async function createDocument(input: {
     .returning();
 
   return document;
+}
+
+export async function updateDocumentProcessingStatus(input: {
+  documentId: string;
+  processingStatus: string;
+  processingError?: string | null;
+}) {
+  const [document] = await db
+    .update(documents)
+    .set({
+      processingStatus: input.processingStatus,
+      processingError: input.processingError ?? null,
+      updatedAt: new Date(),
+    })
+    .where(eq(documents.id, input.documentId))
+    .returning();
+
+  return document ?? null;
+}
+
+export async function saveDocumentExtractionMetadata(input: {
+  documentId: string;
+  extractedPageCount: number | null;
+}) {
+  const [document] = await db
+    .update(documents)
+    .set({
+      extractedPageCount: input.extractedPageCount,
+      processingStatus: "text_extracted",
+      processingError: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(documents.id, input.documentId))
+    .returning();
+
+  return document ?? null;
 }
