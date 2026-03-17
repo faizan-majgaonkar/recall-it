@@ -1,4 +1,4 @@
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { options, questionBanks, questions } from "@/db/schema";
 
@@ -95,4 +95,48 @@ export async function listQuestionBanksByDocumentId(documentId: string) {
     .from(questionBanks)
     .where(eq(questionBanks.documentId, documentId))
     .orderBy(desc(questionBanks.createdAt));
+}
+
+export async function findQuestionBankByIdForUser(input: {
+  questionBankId: string;
+  userId: string;
+}) {
+  const [questionBank] = await db
+    .select()
+    .from(questionBanks)
+    .where(eq(questionBanks.id, input.questionBankId))
+    .limit(1);
+
+  if (!questionBank || questionBank.userId !== input.userId) {
+    return null;
+  }
+
+  return questionBank;
+}
+
+export async function listQuestionsWithOptionsByQuestionBankId(
+  questionBankId: string,
+) {
+  const questionRows = await db
+    .select()
+    .from(questions)
+    .where(eq(questions.questionBankId, questionBankId))
+    .orderBy(asc(questions.orderIndex));
+
+  if (questionRows.length === 0) {
+    return [];
+  }
+
+  const questionIds = questionRows.map((question) => question.id);
+
+  const optionRows = await db
+    .select()
+    .from(options)
+    .where(inArray(options.questionId, questionIds))
+    .orderBy(asc(options.orderIndex));
+
+  return questionRows.map((question) => ({
+    ...question,
+    options: optionRows.filter((option) => option.questionId === question.id),
+  }));
 }

@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 type DocumentListItem = {
   id: string;
   title: string;
@@ -51,10 +54,15 @@ export function DocumentList({ documents }: DocumentListProps) {
               </div>
             </div>
 
-            <div className="shrink-0">
+            <div className="shrink-0 flex flex-col justify-between h-full">
               <span className="inline-flex rounded-full border px-2.5 py-1 text-xs font-medium capitalize text-muted-foreground">
                 {document.processingStatus}
               </span>
+              <Button
+                render={
+                  <Link href={`/documents/${document.id}`}>Open quiz</Link>
+                }
+              />
             </div>
           </div>
         </article>

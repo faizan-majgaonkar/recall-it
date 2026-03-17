@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 type QuestionBankListProps = {
   questionBanks: Array<{
     id: string;
@@ -31,7 +34,7 @@ export function QuestionBankList({ questionBanks }: QuestionBankListProps) {
           key={questionBank.id}
           className="rounded-xl border bg-background p-4 shadow-sm"
         >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="space-y-1">
               <h3 className="text-base font-semibold tracking-tight">
                 {questionBank.title}
@@ -44,9 +47,18 @@ export function QuestionBankList({ questionBanks }: QuestionBankListProps) {
               </p>
             </div>
 
-            <span className="inline-flex rounded-full border px-2.5 py-1 text-xs font-medium capitalize text-muted-foreground">
-              {questionBank.generationStatus}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex rounded-full border px-2.5 py-1 text-xs font-medium capitalize text-muted-foreground">
+                {questionBank.generationStatus}
+              </span>
+
+              <Button
+                variant="outline"
+                render={
+                  <Link href={`/quizzes/${questionBank.id}`}>Open quiz</Link>
+                }
+              />
+            </div>
           </div>
         </article>
       ))}
