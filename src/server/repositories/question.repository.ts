@@ -1,6 +1,6 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { questionBanks, options, questions } from "@/db/schema";
+import { options, questionBanks, questions } from "@/db/schema";
 
 export async function createQuestionBank(input: {
   documentId: string;
@@ -94,5 +94,5 @@ export async function listQuestionBanksByDocumentId(documentId: string) {
     .select()
     .from(questionBanks)
     .where(eq(questionBanks.documentId, documentId))
-    .orderBy(asc(questionBanks.createdAt));
+    .orderBy(desc(questionBanks.createdAt));
 }
