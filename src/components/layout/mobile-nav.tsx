@@ -15,6 +15,15 @@ type MobileNavProps = {
   } | null;
 };
 
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 export function MobileNav({ user }: MobileNavProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +47,6 @@ export function MobileNav({ user }: MobileNavProps) {
         aria-label="Open navigation menu"
         onClick={() => setIsOpen(true)}
       >
-        <span className="sr-only">Open menu</span>
         <svg
           viewBox="0 0 24 24"
           className="size-5"
@@ -50,26 +58,36 @@ export function MobileNav({ user }: MobileNavProps) {
         </svg>
       </Button>
 
-      {isOpen ? (
+      {isOpen && (
         <div className="fixed inset-0 z-50">
+          {/* Backdrop */}
           <button
             type="button"
             aria-label="Close navigation menu"
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/50"
             onClick={closeMenu}
           />
 
-          <div className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col border-l bg-background p-5 shadow-xl">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold tracking-tight">Recall It</p>
-
+          {/* Drawer */}
+          <div className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col border-l bg-background shadow-2xl">
+            {/* Drawer header */}
+            <div className="flex items-center justify-between border-b px-5 py-4">
+              <Link
+                href="/"
+                onClick={closeMenu}
+                className="flex items-center gap-2 font-semibold tracking-tight"
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground text-xs font-bold text-background">
+                  R
+                </span>
+                <span>Recall It</span>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
                 aria-label="Close navigation menu"
                 onClick={closeMenu}
               >
-                <span className="sr-only">Close menu</span>
                 <svg
                   viewBox="0 0 24 24"
                   className="size-5"
@@ -82,23 +100,34 @@ export function MobileNav({ user }: MobileNavProps) {
               </Button>
             </div>
 
-            {user ? (
-              <div className="mt-6 rounded-lg border p-4">
-                <p className="text-sm font-medium">{user.name}</p>
+            {/* User info */}
+            {user && (
+              <div className="border-b px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-sm font-semibold">
+                    {getInitials(user.name)}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{user.name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
               </div>
-            ) : null}
+            )}
 
-            <nav className="mt-6 flex flex-col gap-2">
+            {/* Nav links */}
+            <nav className="flex flex-col gap-1 p-4">
               {links.map((link) => {
                 const isActive = pathname === link.href;
-
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={closeMenu}
                     className={cn(
-                      "rounded-lg px-3 py-2 text-sm transition-colors",
+                      "rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
                         ? "bg-accent text-foreground"
                         : "text-muted-foreground hover:bg-accent hover:text-foreground",
@@ -110,14 +139,15 @@ export function MobileNav({ user }: MobileNavProps) {
               })}
             </nav>
 
-            <div className="mt-auto pt-6">
-              {user ? (
+            {/* Logout */}
+            {user && (
+              <div className="mt-auto border-t p-4">
                 <LogoutButton className="w-full" onLoggedOut={closeMenu} />
-              ) : null}
-            </div>
+              </div>
+            )}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

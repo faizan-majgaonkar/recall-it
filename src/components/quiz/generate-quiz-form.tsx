@@ -20,6 +20,9 @@ type GenerateQuizResponse = {
   };
 };
 
+const selectClass =
+  "flex h-9 w-full appearance-none rounded-lg border border-input bg-background px-3 text-sm outline-none ring-offset-background transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+
 export function GenerateQuizForm({ documentId }: GenerateQuizFormProps) {
   const router = useRouter();
 
@@ -41,9 +44,7 @@ export function GenerateQuizForm({ documentId }: GenerateQuizFormProps) {
         `/api/documents/${documentId}/generate-quiz`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title,
             questionCount: Number(questionCount),
@@ -84,18 +85,18 @@ export function GenerateQuizForm({ documentId }: GenerateQuizFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="question-count">Question count</Label>
+          <Label htmlFor="question-count">Number of questions</Label>
           <select
             id="question-count"
             value={questionCount}
             onChange={(event) => setQuestionCount(event.target.value)}
             disabled={isSubmitting}
-            className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none"
+            className={selectClass}
           >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
+            <option value="5">5 questions</option>
+            <option value="10">10 questions</option>
+            <option value="15">15 questions</option>
+            <option value="20">20 questions</option>
           </select>
         </div>
 
@@ -106,7 +107,7 @@ export function GenerateQuizForm({ documentId }: GenerateQuizFormProps) {
             value={difficulty}
             onChange={(event) => setDifficulty(event.target.value)}
             disabled={isSubmitting}
-            className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none"
+            className={selectClass}
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -115,12 +116,14 @@ export function GenerateQuizForm({ documentId }: GenerateQuizFormProps) {
         </div>
       </div>
 
-      {errorMessage ? (
-        <p className="text-sm text-destructive">{errorMessage}</p>
-      ) : null}
+      {errorMessage && (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {errorMessage}
+        </p>
+      )}
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Generating quiz..." : "Generate quiz"}
+        {isSubmitting ? "Generating quiz…" : "Generate quiz"}
       </Button>
     </form>
   );
