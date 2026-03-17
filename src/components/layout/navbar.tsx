@@ -23,7 +23,7 @@ function getInitials(name: string) {
 
 export function Navbar({ user }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b bg-background">
       <Container size="xl">
         <div className="flex min-h-16 items-center justify-between gap-4">
           {/* Left: logo + nav links */}

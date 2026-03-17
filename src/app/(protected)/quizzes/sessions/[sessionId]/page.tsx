@@ -166,25 +166,24 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
                     key={concept.conceptId}
                     className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 dark:border-amber-800 dark:bg-amber-950/20"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
-                            {index + 1}
-                          </span>
-                          <p className="font-semibold text-sm leading-snug truncate">
-                            {concept.name}
-                          </p>
-                        </div>
-                        {concept.summary && (
-                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 pl-7">
-                            {concept.summary}
-                          </p>
-                        )}
+                    <div className="space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+                          {index + 1}
+                        </span>
+                        <p className="flex-1 text-sm font-semibold leading-snug">
+                          {concept.name}
+                        </p>
+                        <span className="shrink-0 inline-flex items-center rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                          {concept.primaryMisses}{" "}
+                          {concept.primaryMisses !== 1 ? "misses" : "miss"}
+                        </span>
                       </div>
-                      <span className="shrink-0 inline-flex items-center rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
-                        {concept.primaryMisses} miss{concept.primaryMisses !== 1 ? "es" : ""}
-                      </span>
+                      {concept.summary && (
+                        <p className="pl-7 text-xs leading-relaxed text-muted-foreground line-clamp-2">
+                          {concept.summary}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -242,7 +241,7 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
                       {/* Selected answer */}
                       <div
                         className={cn(
-                          "flex items-start gap-2 rounded-lg border px-4 py-3",
+                          "flex flex-col gap-0.5 rounded-lg border px-4 py-3 sm:flex-row sm:items-start sm:gap-2",
                           result.isCorrect
                             ? "border-emerald-200 bg-emerald-50/60 dark:border-emerald-800 dark:bg-emerald-950/30"
                             : "border-red-200 bg-red-50/60 dark:border-red-900 dark:bg-red-950/30",
@@ -250,7 +249,7 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
                       >
                         <span
                           className={cn(
-                            "mt-px shrink-0 text-xs font-semibold",
+                            "shrink-0 text-xs font-semibold",
                             result.isCorrect
                               ? "text-emerald-600 dark:text-emerald-400"
                               : "text-red-600 dark:text-red-400",
@@ -276,8 +275,8 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
 
                       {/* Correct answer — only shown when wrong */}
                       {!result.isCorrect && result.correctOption && (
-                        <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50/60 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/30">
-                          <span className="mt-px shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        <div className="flex flex-col gap-0.5 rounded-lg border border-emerald-200 bg-emerald-50/60 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/30 sm:flex-row sm:items-start sm:gap-2">
+                          <span className="shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                             Correct answer:
                           </span>
                           <span className="leading-snug text-foreground">
