@@ -5,6 +5,7 @@ import {
   uuid,
   integer,
   index,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { documents } from "./documents";
 
@@ -20,12 +21,14 @@ export const documentChunks = pgTable(
     chunkIndex: integer("chunk_index").notNull(),
     sectionTitle: text("section_title"),
     sectionPath: text("section_path"),
+    headingLevel: integer("heading_level"),
 
     pageStart: integer("page_start"),
     pageEnd: integer("page_end"),
 
     text: text("text").notNull(),
     tokenCount: integer("token_count"),
+    isFullSection: boolean("is_full_section").notNull().default(false),
     overlapFromPrevious: integer("overlap_from_previous"),
 
     createdAt: timestamp("created_at", { withTimezone: true })
