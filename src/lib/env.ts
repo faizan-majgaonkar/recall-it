@@ -16,6 +16,7 @@ const envSchema = z.object({
 
   OPENAI_API_KEY: z.string().min(1),
   OPENAI_CONCEPT_MODEL: z.string().min(1).default("gpt-5-mini"),
+  OPENAI_QUESTION_MODEL: z.string().min(1).default("gpt-5-mini"),
 
   NODE_ENV: z
     .enum(["development", "test", "production"])
@@ -36,6 +37,7 @@ export const env = envSchema.parse({
 
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_CONCEPT_MODEL: process.env.OPENAI_CONCEPT_MODEL,
+  OPENAI_QUESTION_MODEL: process.env.OPENAI_QUESTION_MODEL,
 
   NODE_ENV: process.env.NODE_ENV,
 });

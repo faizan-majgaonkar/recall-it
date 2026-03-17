@@ -9,7 +9,7 @@ import type {
 import { questionGenerationJsonSchema } from "./question-generation.types";
 
 const DEFAULT_DIFFICULTY: QuizDifficulty = "medium";
-const MAX_CONCEPTS_PER_BATCH = 4;
+const MAX_CONCEPTS_PER_BATCH = 3;
 const MAX_CHUNKS_PER_CONCEPT = 3;
 
 function chunkIntoBatches<T>(items: T[], size: number) {
@@ -123,7 +123,7 @@ function buildQuestionGenerationPrompt(input: {
     "- Generate exactly 4 answer options per question.",
     "- Exactly one option must be correct.",
     "- Every option must include explanation and distractorRationale.",
-    "- explanation should say why the option is right or wrong.",
+    "- explanation should say why the option is right or wrong. Without any begining phrase like Correct or This is Incorrect etc.",
     "- distractorRationale should describe the misconception being tested; use null for the correct option if appropriate.",
     "- Keep questions grounded in the document content only.",
     `- Difficulty level: ${input.difficulty}.`,
@@ -140,7 +140,7 @@ async function generateQuestionBatch(input: {
   difficulty: QuizDifficulty;
 }) {
   const response = await openai.responses.create({
-    model: env.OPENAI_CONCEPT_MODEL,
+    model: env.OPENAI_QUESTION_MODEL,
     input: [
       {
         role: "developer",
