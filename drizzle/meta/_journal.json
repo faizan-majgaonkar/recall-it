@@ -43,6 +43,13 @@
       "when": 1773749035133,
       "tag": "0005_workable_mongu",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773762495225,
+      "tag": "0006_fine_doorman",
+      "breakpoints": true
     }
   ]
 }

@@ -7,3 +7,5 @@ export * from "./concept-chunk-links";
 export * from "./question-banks";
 export * from "./questions";
 export * from "./options";
+export * from "./quiz-sessions";
+export * from "./quiz-answers";
