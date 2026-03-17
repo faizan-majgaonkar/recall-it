@@ -10,6 +10,8 @@ import {
   findQuestionBankByIdForUser,
   listQuestionsWithOptionsByQuestionBankId,
 } from "@/server/repositories/question.repository";
+import { listConceptsByDocumentId } from "@/server/repositories/concept.repository";
+import { computeWeakConcepts } from "@/server/modules/quiz-evaluation/weak-concept-detection.service";
 import { cn } from "@/lib/utils";
 
 type ResultsPageProps = {
@@ -52,9 +54,10 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
     notFound();
   }
 
-  const [questions, answers] = await Promise.all([
+  const [questions, answers, concepts] = await Promise.all([
     listQuestionsWithOptionsByQuestionBankId(questionBank.id),
     listAnswersBySessionId(session.id),
+    listConceptsByDocumentId(questionBank.documentId),
   ]);
 
   const answerByQuestionId = new Map(
@@ -81,6 +84,12 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
       };
     })
     .filter((r): r is NonNullable<typeof r> => r !== null);
+
+  const weakConcepts = computeWeakConcepts({
+    answers,
+    questions,
+    concepts,
+  });
 
   const score = session.score ?? 0;
   const correctCount = session.correctCount ?? 0;
@@ -138,6 +147,50 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
               </div>
             </div>
           </section>
+
+          {/* Weak concepts */}
+          {weakConcepts.length > 0 && (
+            <section className="space-y-4">
+              <div className="space-y-1">
+                <h2 className="text-lg font-semibold tracking-tight">
+                  Areas to review
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Concepts where you made the most mistakes, ranked by impact.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {weakConcepts.map((concept, index) => (
+                  <div
+                    key={concept.conceptId}
+                    className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 dark:border-amber-800 dark:bg-amber-950/20"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+                            {index + 1}
+                          </span>
+                          <p className="font-semibold text-sm leading-snug truncate">
+                            {concept.name}
+                          </p>
+                        </div>
+                        {concept.summary && (
+                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 pl-7">
+                            {concept.summary}
+                          </p>
+                        )}
+                      </div>
+                      <span className="shrink-0 inline-flex items-center rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                        {concept.primaryMisses} miss{concept.primaryMisses !== 1 ? "es" : ""}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Question breakdown */}
           <section className="space-y-4">

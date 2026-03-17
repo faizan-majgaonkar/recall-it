@@ -122,6 +122,7 @@ function buildQuestionGenerationPrompt(input: {
     "- Use only sourceChunkIds that appear in the provided concept blocks.",
     "- Generate exactly 4 answer options per question.",
     "- Exactly one option must be correct.",
+    "- Make sure the options and properly randomized.",
     "- Every option must include explanation and distractorRationale.",
     "- explanation should say why the option is right or wrong. Without any begining phrase like Correct or This is Incorrect etc.",
     "- distractorRationale should describe the misconception being tested; use null for the correct option if appropriate.",
