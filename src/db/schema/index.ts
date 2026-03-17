@@ -4,3 +4,6 @@ export * from "./documents";
 export * from "./document-chunks";
 export * from "./concepts";
 export * from "./concept-chunk-links";
+export * from "./question-banks";
+export * from "./questions";
+export * from "./options";
