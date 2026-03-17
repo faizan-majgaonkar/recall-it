@@ -14,6 +14,9 @@ const envSchema = z.object({
   R2_BUCKET_NAME: z.string().min(1),
   R2_PUBLIC_BASE_URL: z.string().url().optional(),
 
+  OPENAI_API_KEY: z.string().min(1),
+  OPENAI_CONCEPT_MODEL: z.string().min(1).default("gpt-5-mini"),
+
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
@@ -30,6 +33,9 @@ export const env = envSchema.parse({
   R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
   R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
   R2_PUBLIC_BASE_URL: process.env.R2_PUBLIC_BASE_URL,
+
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_CONCEPT_MODEL: process.env.OPENAI_CONCEPT_MODEL,
 
   NODE_ENV: process.env.NODE_ENV,
 });
