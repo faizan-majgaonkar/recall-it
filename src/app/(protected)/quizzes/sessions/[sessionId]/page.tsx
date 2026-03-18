@@ -11,7 +11,9 @@ import {
   listQuestionsWithOptionsByQuestionBankId,
 } from "@/server/repositories/question.repository";
 import { listConceptsByDocumentId } from "@/server/repositories/concept.repository";
+import { findDocumentByIdForUser } from "@/server/repositories/document.repository";
 import { computeWeakConcepts } from "@/server/modules/quiz-evaluation/weak-concept-detection.service";
+import { TutorCtaButton } from "@/components/tutor/tutor-cta-button";
 import { cn } from "@/lib/utils";
 
 type ResultsPageProps = {
@@ -25,6 +27,7 @@ function scoreColor(score: number) {
   if (score >= 50) return "text-amber-600 dark:text-amber-400";
   return "text-red-600 dark:text-red-400";
 }
+
 
 function scoreLabel(score: number) {
   if (score >= 80) return "Great work";
@@ -54,10 +57,11 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
     notFound();
   }
 
-  const [questions, answers, concepts] = await Promise.all([
+  const [questions, answers, concepts, document] = await Promise.all([
     listQuestionsWithOptionsByQuestionBankId(questionBank.id),
     listAnswersBySessionId(session.id),
     listConceptsByDocumentId(questionBank.documentId),
+    findDocumentByIdForUser({ documentId: questionBank.documentId, userId: user.id }),
   ]);
 
   const answerByQuestionId = new Map(
@@ -129,22 +133,45 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
           </section>
 
           {/* Score card */}
-          <section className="rounded-xl border bg-background p-8 shadow-sm">
-            <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-end sm:gap-6 sm:text-left">
-              <span
-                className={cn(
-                  "text-7xl font-bold tabular-nums leading-none tracking-tight",
-                  scoreColor(score),
-                )}
-              >
-                {score}%
-              </span>
-              <div className="space-y-1 pb-1">
-                <p className="text-lg font-semibold">{scoreLabel(score)}</p>
-                <p className="text-sm text-muted-foreground">
-                  {correctCount} correct out of {totalQuestions} questions
-                </p>
+          <section className="rounded-xl border bg-background shadow-sm overflow-hidden">
+            <div className="flex flex-col divide-y sm:flex-row sm:divide-x sm:divide-y-0">
+              {/* Score side */}
+              <div className="flex flex-1 items-center gap-5 px-8 py-7">
+                <span
+                  className={cn(
+                    "text-7xl font-bold tabular-nums leading-none tracking-tight",
+                    scoreColor(score),
+                  )}
+                >
+                  {score}%
+                </span>
+                <div className="space-y-1">
+                  <p className="text-lg font-semibold">{scoreLabel(score)}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {correctCount} correct out of {totalQuestions} questions
+                  </p>
+                </div>
               </div>
+
+              {/* Tutor side */}
+              {document && (
+                <div className="flex flex-col items-start justify-center gap-3 px-8 py-7 sm:min-w-52">
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-semibold">AI Tutor</p>
+                    <p className="text-xs text-muted-foreground">
+                      {document.processingStatus === "embedded"
+                        ? "Ask questions about this document"
+                        : document.processingStatus === "embedding"
+                          ? "Setting up — check back shortly"
+                          : "Get AI-powered explanations"}
+                    </p>
+                  </div>
+                  <TutorCtaButton
+                    documentId={questionBank.documentId}
+                    initialStatus={document.processingStatus}
+                  />
+                </div>
+              )}
             </div>
           </section>
 

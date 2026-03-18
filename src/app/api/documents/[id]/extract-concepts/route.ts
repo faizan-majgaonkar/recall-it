@@ -10,6 +10,7 @@ import {
   deleteConceptsByDocumentId,
 } from "@/server/repositories/concept.repository";
 import { extractConceptsFromChunks } from "@/server/modules/documents/concept-extraction.service";
+import { embedDocumentChunks } from "@/server/modules/documents/embedding.service";
 
 type RouteContext = {
   params: Promise<{
@@ -104,9 +105,11 @@ export async function POST(_request: Request, context: RouteContext) {
       processingError: null,
     });
 
+    await embedDocumentChunks(document.id);
+
     return Response.json({
       success: true,
-      message: "Concepts extracted successfully",
+      message: "Concepts extracted and embeddings generated",
       documentId: document.id,
       conceptCount: savedConcepts.length,
       linkCount: linksToCreate.length,

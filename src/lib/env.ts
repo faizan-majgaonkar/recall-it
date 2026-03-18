@@ -17,6 +17,13 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().min(1),
   OPENAI_CONCEPT_MODEL: z.string().min(1).default("gpt-5-mini"),
   OPENAI_QUESTION_MODEL: z.string().min(1).default("gpt-5-mini"),
+  OPENAI_EMBEDDING_MODEL: z
+    .string()
+    .min(1)
+    .default("text-embedding-3-small"),
+
+  PINECONE_API_KEY: z.string().min(1),
+  PINECONE_INDEX: z.string().min(1),
 
   NODE_ENV: z
     .enum(["development", "test", "production"])
@@ -38,6 +45,10 @@ export const env = envSchema.parse({
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_CONCEPT_MODEL: process.env.OPENAI_CONCEPT_MODEL,
   OPENAI_QUESTION_MODEL: process.env.OPENAI_QUESTION_MODEL,
+  OPENAI_EMBEDDING_MODEL: process.env.OPENAI_EMBEDDING_MODEL,
+
+  PINECONE_API_KEY: process.env.PINECONE_API_KEY,
+  PINECONE_INDEX: process.env.PINECONE_INDEX,
 
   NODE_ENV: process.env.NODE_ENV,
 });
