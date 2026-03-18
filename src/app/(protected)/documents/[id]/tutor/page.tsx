@@ -55,7 +55,7 @@ export default async function TutorPage({
     : "Back to document";
 
   return (
-    <main className="fixed inset-0 flex flex-col bg-background">
+    <main className="fixed inset-0 top-16 flex flex-col bg-background">
       {/* Header */}
       <header className="shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex max-w-4xl items-center gap-4 px-4 py-3 sm:px-6">

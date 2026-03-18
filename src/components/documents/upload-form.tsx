@@ -62,6 +62,12 @@ export function UploadForm() {
         return;
       }
 
+      if (data.document?.id) {
+        fetch(`/api/documents/${data.document.id}/process`, {
+          method: "POST",
+        }).catch(() => {});
+      }
+
       router.replace("/documents");
       router.refresh();
     } catch {

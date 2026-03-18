@@ -16,7 +16,7 @@ type DocumentDetailPageProps = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  uploaded: "Uploaded",
+  uploaded: "Processing…",
   extracting_text: "Extracting text…",
   text_extracted: "Text extracted",
   chunking: "Chunking…",
@@ -25,8 +25,12 @@ const STATUS_LABELS: Record<string, string> = {
   concepts_extracted: "Ready for quiz",
   embedding: "Generating embeddings…",
   embedded: "Ready for tutor",
-  embedding_failed: "Embedding failed",
   failed: "Failed",
+  processing_failed: "Processing failed",
+  chunking_failed: "Chunking failed",
+  extraction_failed: "Extraction failed",
+  concept_extraction_failed: "Concept extraction failed",
+  embedding_failed: "Embedding failed",
 };
 
 function statusBadgeClass(status: string) {
