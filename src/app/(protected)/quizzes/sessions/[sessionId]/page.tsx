@@ -169,6 +169,8 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
                   <TutorCtaButton
                     documentId={questionBank.documentId}
                     initialStatus={document.processingStatus}
+                    quizSessionId={session.id}
+                    weakConceptIds={weakConcepts.map((c) => c.conceptId)}
                   />
                 </div>
               )}

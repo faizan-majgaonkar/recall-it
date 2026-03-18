@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/layout/container";
 import { GenerateQuizForm } from "@/components/quiz/generate-quiz-form";
 import { QuestionBankList } from "@/components/quiz/question-bank-list";
+import { TutorCtaButton } from "@/components/tutor/tutor-cta-button";
 import { requireAuthenticatedUser } from "@/lib/auth/require-user";
 import { findDocumentByIdForUser } from "@/server/repositories/document.repository";
 import { listQuestionBanksByDocumentId } from "@/server/repositories/question.repository";
@@ -101,6 +102,27 @@ export default async function DocumentDetailPage({
               </span>
             </div>
           </section>
+
+          {/* AI Tutor */}
+          {document.processingStatus === "embedded" && (
+            <section className="rounded-xl border bg-background p-6 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h2 className="text-lg font-semibold tracking-tight">
+                    AI Tutor
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Study this document with an AI tutor that answers using your
+                    source material.
+                  </p>
+                </div>
+                <TutorCtaButton
+                  documentId={document.id}
+                  initialStatus={document.processingStatus}
+                />
+              </div>
+            </section>
+          )}
 
           {/* Generate quiz */}
           <section className="rounded-xl border bg-background p-6 shadow-sm">

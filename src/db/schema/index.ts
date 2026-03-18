@@ -9,3 +9,5 @@ export * from "./questions";
 export * from "./options";
 export * from "./quiz-sessions";
 export * from "./quiz-answers";
+export * from "./tutor-sessions";
+export * from "./tutor-messages";

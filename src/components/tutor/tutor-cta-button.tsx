@@ -6,11 +6,15 @@ import { useRouter } from "next/navigation";
 type TutorCtaButtonProps = {
   documentId: string;
   initialStatus: string;
+  quizSessionId?: string;
+  weakConceptIds?: string[];
 };
 
 export function TutorCtaButton({
   documentId,
   initialStatus,
+  quizSessionId,
+  weakConceptIds,
 }: TutorCtaButtonProps) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
@@ -19,24 +23,44 @@ export function TutorCtaButton({
   const isEmbedding = status === "embedding" || isTriggering;
   const isEmbedded = status === "embedded";
 
+  function buildTutorUrl() {
+    const params = new URLSearchParams();
+    if (quizSessionId) params.set("quizSessionId", quizSessionId);
+    if (weakConceptIds && weakConceptIds.length > 0) {
+      params.set("concepts", weakConceptIds.join(","));
+    }
+    const qs = params.toString();
+    return `/documents/${documentId}/tutor${qs ? `?${qs}` : ""}`;
+  }
+
   async function handleSetupClick() {
     setIsTriggering(true);
     setStatus("embedding");
 
     try {
-      await fetch(`/api/documents/${documentId}/embed`, { method: "POST" });
-      router.refresh();
+      const response = await fetch(`/api/documents/${documentId}/embed`, {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus("embedded");
+        router.push(buildTutorUrl());
+        return;
+      }
     } catch {
-      // Status is already showing "embedding" — background job will update DB
+      // Fall through
     } finally {
       setIsTriggering(false);
     }
+
+    router.refresh();
   }
 
   if (isEmbedded) {
     return (
       <a
-        href={`/documents/${documentId}/tutor`}
+        href={buildTutorUrl()}
         className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
       >
         Open tutor →
