@@ -64,8 +64,13 @@ export function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+      <div className="space-y-1.5">
+        <Label 
+          htmlFor="name" 
+          className="text-sm font-medium"
+        >
+          Name
+        </Label>
         <Input
           id="name"
           type="text"
@@ -75,11 +80,17 @@ export function SignupForm() {
           onChange={(event) => setName(event.target.value)}
           disabled={isSubmitting}
           required
+          className="h-11 sm:h-10 text-base sm:text-sm"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="signup-email">Email</Label>
+      <div className="space-y-1.5">
+        <Label 
+          htmlFor="signup-email" 
+          className="text-sm font-medium"
+        >
+          Email
+        </Label>
         <Input
           id="signup-email"
           type="email"
@@ -89,11 +100,17 @@ export function SignupForm() {
           onChange={(event) => setEmail(event.target.value)}
           disabled={isSubmitting}
           required
+          className="h-11 sm:h-10 text-base sm:text-sm"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="signup-password">Password</Label>
+      <div className="space-y-1.5">
+        <Label 
+          htmlFor="signup-password" 
+          className="text-sm font-medium"
+        >
+          Password
+        </Label>
         <Input
           id="signup-password"
           type="password"
@@ -103,22 +120,34 @@ export function SignupForm() {
           onChange={(event) => setPassword(event.target.value)}
           disabled={isSubmitting}
           required
+          className="h-11 sm:h-10 text-base sm:text-sm"
         />
+        <p className="text-xs text-muted-foreground pt-1">
+          Must be at least 8 characters
+        </p>
       </div>
 
-      {errorMessage ? (
-        <p className="text-sm text-destructive">{errorMessage}</p>
-      ) : null}
+      {errorMessage && (
+        <div className="rounded-lg bg-destructive/10 px-3 py-2.5">
+          <p className="text-sm font-medium text-destructive">{errorMessage}</p>
+        </div>
+      )}
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Creating account..." : "Create account"}
-      </Button>
+      <div className="pt-1">
+        <Button 
+          type="submit" 
+          className="w-full h-11 sm:h-10 text-base sm:text-sm font-medium" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Creating account..." : "Create account"}
+        </Button>
+      </div>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-muted-foreground pt-1">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium text-foreground underline underline-offset-4"
+          className="font-semibold text-foreground hover:underline underline-offset-4"
         >
           Log in
         </Link>

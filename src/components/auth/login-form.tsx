@@ -65,8 +65,13 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div className="space-y-1.5">
+        <Label 
+          htmlFor="email" 
+          className="text-sm font-medium"
+        >
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
@@ -76,11 +81,19 @@ export function LoginForm() {
           onChange={(event) => setEmail(event.target.value)}
           disabled={isSubmitting}
           required
+          className="h-11 sm:h-10 text-base sm:text-sm"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label 
+            htmlFor="password" 
+            className="text-sm font-medium"
+          >
+            Password
+          </Label>
+        </div>
         <Input
           id="password"
           type="password"
@@ -90,22 +103,31 @@ export function LoginForm() {
           onChange={(event) => setPassword(event.target.value)}
           disabled={isSubmitting}
           required
+          className="h-11 sm:h-10 text-base sm:text-sm"
         />
       </div>
 
-      {errorMessage ? (
-        <p className="text-sm text-destructive">{errorMessage}</p>
-      ) : null}
+      {errorMessage && (
+        <div className="rounded-lg bg-destructive/10 px-3 py-2.5">
+          <p className="text-sm font-medium text-destructive">{errorMessage}</p>
+        </div>
+      )}
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Logging in..." : "Log in"}
-      </Button>
+      <div className="pt-1">
+        <Button 
+          type="submit" 
+          className="w-full h-11 sm:h-10 text-base sm:text-sm font-medium" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Logging in..." : "Log in"}
+        </Button>
+      </div>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-muted-foreground pt-1">
         Don&apos;t have an account?{" "}
         <Link
           href="/signup"
-          className="font-medium text-foreground underline underline-offset-4"
+          className="font-semibold text-foreground hover:underline underline-offset-4"
         >
           Sign up
         </Link>
