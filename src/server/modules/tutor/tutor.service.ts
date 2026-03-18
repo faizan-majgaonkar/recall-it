@@ -109,7 +109,7 @@ export async function startTutorSession(input: {
   return {
     sessionId: session.id,
     greeting,
-    sourceChunks: [],
+    sourceChunks: [] as RetrievedChunk[],
   };
 }
 
