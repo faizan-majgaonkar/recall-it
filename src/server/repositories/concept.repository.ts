@@ -1,6 +1,27 @@
 import { asc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
-import { conceptChunkLinks, concepts, documentChunks } from "@/db/schema";
+import { conceptChunkLinks, concepts, documentChunks, questions } from "@/db/schema";
+
+export async function listConceptsByQuestionBankId(questionBankId: string) {
+  const questionRows = await db
+    .select({ primaryConceptId: questions.primaryConceptId })
+    .from(questions)
+    .where(eq(questions.questionBankId, questionBankId));
+
+  const conceptIds = Array.from(
+    new Set(questionRows.map((q) => q.primaryConceptId)),
+  );
+
+  if (conceptIds.length === 0) {
+    return [];
+  }
+
+  return db
+    .select({ id: concepts.id, name: concepts.name })
+    .from(concepts)
+    .where(inArray(concepts.id, conceptIds))
+    .orderBy(asc(concepts.name));
+}
 
 export async function listConceptsByDocumentId(documentId: string) {
   return db

@@ -113,7 +113,7 @@ export default async function QuizResultsPage({ params }: ResultsPageProps) {
               </h1>
               <div className="flex flex-wrap gap-3">
                 <Link
-                  href={`/quizzes/${questionBank.id}`}
+                  href={`/quizzes/${questionBank.id}/attempt`}
                   className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent"
                 >
                   Retake quiz

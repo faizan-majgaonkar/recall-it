@@ -1,18 +1,25 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/container";
-import { QuizRunner } from "@/components/quiz/quiz-runner";
+import { SessionHistoryList } from "@/components/quiz/session-history-list";
 import { requireAuthenticatedUser } from "@/lib/auth/require-user";
-import {
-  findQuestionBankByIdForUser,
-  listQuestionsWithOptionsByQuestionBankId,
-} from "@/server/repositories/question.repository";
+import { findQuestionBankByIdForUser } from "@/server/repositories/question.repository";
+import { listSessionsByQuestionBankId } from "@/server/repositories/quiz-session.repository";
+import { listConceptsByQuestionBankId } from "@/server/repositories/concept.repository";
 
 type QuizPageProps = {
   params: Promise<{
     id: string;
   }>;
 };
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+}
 
 export default async function QuizPage({ params }: QuizPageProps) {
   const user = await requireAuthenticatedUser();
@@ -27,9 +34,15 @@ export default async function QuizPage({ params }: QuizPageProps) {
     notFound();
   }
 
-  const questions = await listQuestionsWithOptionsByQuestionBankId(
-    questionBank.id,
-  );
+  const [sessions, concepts] = await Promise.all([
+    listSessionsByQuestionBankId(questionBank.id),
+    listConceptsByQuestionBankId(questionBank.id),
+  ]);
+
+  const bestScore =
+    sessions.length > 0
+      ? Math.max(...sessions.map((s) => s.score ?? 0))
+      : null;
 
   return (
     <main className="py-10">
@@ -43,35 +56,85 @@ export default async function QuizPage({ params }: QuizPageProps) {
             >
               ← Back to document
             </Link>
-            <div className="space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                {questionBank.title}
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {questions.length} question{questions.length !== 1 ? "s" : ""}
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-1">
+                <h1 className="text-2xl font-semibold tracking-tight">
+                  {questionBank.title}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Created {formatDate(questionBank.createdAt)}
+                </p>
+              </div>
+              <Link
+                href={`/quizzes/${questionBank.id}/attempt`}
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              >
+                Start quiz →
+              </Link>
+            </div>
+          </section>
+
+          {/* Stats */}
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border bg-background p-5 shadow-sm">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Questions
+              </p>
+              <p className="mt-1 text-3xl font-bold tabular-nums">
+                {questionBank.questionCount}
+              </p>
+            </div>
+
+            <div className="rounded-xl border bg-background p-5 shadow-sm">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Attempts
+              </p>
+              <p className="mt-1 text-3xl font-bold tabular-nums">
+                {sessions.length}
+              </p>
+            </div>
+
+            <div className="col-span-2 rounded-xl border bg-background p-5 shadow-sm sm:col-span-1">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Best score
+              </p>
+              <p className="mt-1 text-3xl font-bold tabular-nums">
+                {bestScore !== null ? `${bestScore}%` : "—"}
               </p>
             </div>
           </section>
 
-          {questions.length > 0 ? (
-            <QuizRunner
-              questionBankId={questionBank.id}
-              questions={questions.map((q) => ({
-                id: q.id,
-                prompt: q.prompt,
-                difficulty: q.difficulty,
-                options: q.options.map((o) => ({
-                  id: o.id,
-                  optionKey: o.optionKey,
-                  text: o.text,
-                })),
-              }))}
-            />
-          ) : (
-            <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-              This quiz does not contain any questions yet.
-            </div>
+          {/* Concepts covered */}
+          {concepts.length > 0 && (
+            <section className="rounded-xl border bg-background p-5 shadow-sm space-y-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Concepts covered
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {concepts.map((concept) => (
+                  <span
+                    key={concept.id}
+                    className="inline-flex items-center rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium text-foreground"
+                  >
+                    {concept.name}
+                  </span>
+                ))}
+              </div>
+            </section>
           )}
+
+          {/* Past attempts */}
+          <section className="space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold tracking-tight">
+                Past attempts
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Your previous attempts on this quiz, most recent first.
+              </p>
+            </div>
+            <SessionHistoryList sessions={sessions} />
+          </section>
         </div>
       </Container>
     </main>
